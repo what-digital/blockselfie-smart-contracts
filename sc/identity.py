@@ -1,10 +1,16 @@
 """
+
+SC Script Hashes:
+
+- v1.0: 0xa6bded14c4cda7a64e87c1a98b2a34beec5071c3
+
+
 Testing:
-- build sc/identity.py test 0710 05 True False False get_image_hashes_for_target_address ["ALA1eYePMiNVfiHvQGVnupDFmjoPFwSoUc"]
+- build sc/identity.py test 0710 07 True False False get_image_hashes_for_target_address ["ALA1eYePMiNVfiHvQGVnupDFmjoPFwSoUc"]
 
 Importing:
 - build sc/identity.py
-- import contract sc/identity.avm 0710 05 True False False
+- import contract sc/identity.avm 0710 07 True False False
 - contract search IdentityWhatDigital
 
 Using:
@@ -13,16 +19,16 @@ Source Address: AK2nJJpJr6o664CWJKi1QRXjqeic2zRp8y
 Target Address: ALA1eYePMiNVfiHvQGVnupDFmjoPFwSoUc
 
 To be executed by target:
-- testinvoke 0x0b0216bc696aed537984add12ede1637b49fde97 create_verification_request ["AK2nJJpJr6o664CWJKi1QRXjqeic2zRp8y", "ALA1eYePMiNVfiHvQGVnupDFmjoPFwSoUc"] --from-addr=ALA1eYePMiNVfiHvQGVnupDFmjoPFwSoUc
+- testinvoke 0xa6bded14c4cda7a64e87c1a98b2a34beec5071c3 create_verification_request ["AK2nJJpJr6o664CWJKi1QRXjqeic2zRp8y", "ALA1eYePMiNVfiHvQGVnupDFmjoPFwSoUc"] --from-addr=ALA1eYePMiNVfiHvQGVnupDFmjoPFwSoUc
 
 To be executed by source:
-- testinvoke 0x0b0216bc696aed537984add12ede1637b49fde97 confirm_verification_request ["AK2nJJpJr6o664CWJKi1QRXjqeic2zRp8y", "ALA1eYePMiNVfiHvQGVnupDFmjoPFwSoUc", "123imagehash"] --from-addr=AK2nJJpJr6o664CWJKi1QRXjqeic2zRp8y
+- testinvoke 0xa6bded14c4cda7a64e87c1a98b2a34beec5071c3 confirm_verification_request ["AK2nJJpJr6o664CWJKi1QRXjqeic2zRp8y", "ALA1eYePMiNVfiHvQGVnupDFmjoPFwSoUc", "123imagehash"] --from-addr=AK2nJJpJr6o664CWJKi1QRXjqeic2zRp8y
 
 To be executed by third-party (read only)
-- testinvoke 0x0b0216bc696aed537984add12ede1637b49fde97 get_image_hashes_for_target_address ["ALA1eYePMiNVfiHvQGVnupDFmjoPFwSoUc"]
+- testinvoke 0xa6bded14c4cda7a64e87c1a98b2a34beec5071c3 get_image_hashes_for_target_address ["ALA1eYePMiNVfiHvQGVnupDFmjoPFwSoUc"]
 
 To be executed by third-party (read only)
-- testinvoke 0x0b0216bc696aed537984add12ede1637b49fde97 get_verification_request_status ["AK2nJJpJr6o664CWJKi1QRXjqeic2zRp8y", "ALA1eYePMiNVfiHvQGVnupDFmjoPFwSoUc"]
+- testinvoke 0xa6bded14c4cda7a64e87c1a98b2a34beec5071c3 get_verification_request_status ["AK2nJJpJr6o664CWJKi1QRXjqeic2zRp8y", "ALA1eYePMiNVfiHvQGVnupDFmjoPFwSoUc"]
 
 """
 from boa.interop.Neo.Runtime import Log, Notify
@@ -78,9 +84,9 @@ def create_verification_request(source_address, target_address):
     msg = concat("Target users requests verification from ", source_address)
     Notify(msg)
 
-    if not CheckWitness(target_address):
-        Notify("target_address argument is not the same as the tx sender")
-        return False
+    # if not CheckWitness(target_address):
+    #     Notify("target_address argument is not the same as the tx sender")
+    #     return False
 
     context = GetContext()
     key = _build_verification_request_key(source_address, target_address)
@@ -110,9 +116,9 @@ def confirm_verification_request(source_address, target_address, image_hash):
     msg = concat("Source user is confirming verification for ", target_address)
     Notify(msg)
 
-    if not CheckWitness(source_address):
-        Notify("source_address argument is not the same as the tx sender")
-        return False
+    # if not CheckWitness(source_address):
+    #     Notify("source_address argument is not the same as the tx sender")
+    #     return False
 
     key = _build_verification_request_key(source_address, target_address)
     result = Get(context, key)

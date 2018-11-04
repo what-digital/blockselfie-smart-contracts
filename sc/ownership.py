@@ -10,7 +10,7 @@ Importing:
 
 Testinvoke:
 
-- testinvoke 0xce0fb320187933b8fa5ef91b2b64ad6bb827ace0 set_composite_key ["ab", "cd"] --from-addr=AK2nJJpJr6o664CWJKi1QRXjqeic2zRp8y
+- testinvoke 0xce0fb320187933b8fa5ef91b2b64ad6bb827ace0 set_composite_key ["ab", "cd", "123somevalue"] --from-addr=AK2nJJpJr6o664CWJKi1QRXjqeic2zRp8y
 
 
 """

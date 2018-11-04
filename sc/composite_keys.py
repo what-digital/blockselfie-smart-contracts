@@ -8,14 +8,14 @@ Contract History
 - v010: 0x4e24294d8a3fb9d3b5636003396e4ad42f5a3ef4
 
 Testing:
-- build sc/composite_keys.py test 0710 05 True False False set_key_by_composites ["ab", "cd", "123somevalue"]
-- build sc/composite_keys.py test 0710 05 True False False get_key_by_composites ["ab", "cd"]
-- build sc/composite_keys.py test 0710 05 True False False get_key ["abcd"]
-- build sc/composite_keys.py test 0710 05 True False False set_key ["abcd", "testresult2"]
+- build sc/composite_keys.py test 0710 07 True False False set_key_by_composites ["ab", "cd", "123somevalue"]
+- build sc/composite_keys.py test 0710 07 True False False get_key_by_composites ["ab", "cd"]
+- build sc/composite_keys.py test 0710 07 True False False get_key ["abcd"]
+- build sc/composite_keys.py test 0710 07 True False False set_key ["abcd", "testresult2"]
 
 Importing:
 - build sc/composite_keys.py
-- import contract sc/composite_keys.avm 0710 05 True False False
+- import contract sc/composite_keys.avm 0710 07 True False False
 
 
 Testinvoke:
