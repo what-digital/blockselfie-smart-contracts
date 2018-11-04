@@ -1,6 +1,6 @@
 """
 Testing:
-- build sc/identity.py test 0710 05 True False False get_requests_for_target_address ["AK2nJJpJr6o664CWJKi1QRXjqeic2zRp8y"]
+- build sc/identity.py test 0710 05 True False False get_image_hashes_for_target_address ["ALA1eYePMiNVfiHvQGVnupDFmjoPFwSoUc"]
 
 Importing:
 - build sc/identity.py
@@ -13,14 +13,16 @@ Source Address: AK2nJJpJr6o664CWJKi1QRXjqeic2zRp8y
 Target Address: ALA1eYePMiNVfiHvQGVnupDFmjoPFwSoUc
 
 To be executed by target:
-- testinvoke 0x5c723121a650400b4e3084103e3b0642fab3e063 create_verification_request ["AK2nJJpJr6o664CWJKi1QRXjqeic2zRp8y", "ALA1eYePMiNVfiHvQGVnupDFmjoPFwSoUc"] --from-addr=ALA1eYePMiNVfiHvQ
-GVnupDFmjoPFwSoUc
+- testinvoke 0x0b0216bc696aed537984add12ede1637b49fde97 create_verification_request ["AK2nJJpJr6o664CWJKi1QRXjqeic2zRp8y", "ALA1eYePMiNVfiHvQGVnupDFmjoPFwSoUc"] --from-addr=ALA1eYePMiNVfiHvQGVnupDFmjoPFwSoUc
 
 To be executed by source:
-- testinvoke 0x5c723121a650400b4e3084103e3b0642fab3e063 confirm_verification_request ["AK2nJJpJr6o664CWJKi1QRXjqeic2zRp8y", "ALA1eYePMiNVfiHvQGVnupDFmjoPFwSoUc", "123imagehash"] --from-addr=AK2nJJpJr6o664CWJKi1QRXjqeic2zRp8y
+- testinvoke 0x0b0216bc696aed537984add12ede1637b49fde97 confirm_verification_request ["AK2nJJpJr6o664CWJKi1QRXjqeic2zRp8y", "ALA1eYePMiNVfiHvQGVnupDFmjoPFwSoUc", "123imagehash"] --from-addr=AK2nJJpJr6o664CWJKi1QRXjqeic2zRp8y
 
-To be execcuted by third-party (read only)
-- testinvoke 0x5c723121a650400b4e3084103e3b0642fab3e063 get_requests_for_target_address ["ALA1eYePMiNVfiHvQGVnupDFmjoPFwSoUc"]
+To be executed by third-party (read only)
+- testinvoke 0x0b0216bc696aed537984add12ede1637b49fde97 get_image_hashes_for_target_address ["ALA1eYePMiNVfiHvQGVnupDFmjoPFwSoUc"]
+
+To be executed by third-party (read only)
+- testinvoke 0x0b0216bc696aed537984add12ede1637b49fde97 get_verification_request_status ["AK2nJJpJr6o664CWJKi1QRXjqeic2zRp8y", "ALA1eYePMiNVfiHvQGVnupDFmjoPFwSoUc"]
 
 """
 from boa.interop.Neo.Runtime import Log, Notify
@@ -55,9 +57,14 @@ def Main(operation, args):
         image_hash = args[2]
         return confirm_verification_request(source_address, target_address, image_hash)
 
-    elif operation == 'get_requests_for_target_address':
+    elif operation == 'get_image_hashes_for_target_address':
         target_address = args[0]
-        return get_requests_for_target_address(target_address)
+        return get_image_hashes_for_target_address(target_address)
+
+    elif operation == 'get_verification_request_status':
+        source_address = args[0]
+        target_address = args[1]
+        return get_verification_request_status(source_address, target_address)
 
 
 def create_verification_request(source_address, target_address):
@@ -67,7 +74,6 @@ def create_verification_request(source_address, target_address):
     :param source_address:
     :return:
     """
-    context = GetContext()
 
     msg = concat("Target users requests verification from ", source_address)
     Notify(msg)
@@ -76,6 +82,7 @@ def create_verification_request(source_address, target_address):
         Notify("target_address argument is not the same as the tx sender")
         return False
 
+    context = GetContext()
     key = _build_verification_request_key(source_address, target_address)
     result = Get(context, key)
 
@@ -130,7 +137,7 @@ def confirm_verification_request(source_address, target_address, image_hash):
     return False
 
 
-def get_requests_for_target_address(target_address):
+def get_image_hashes_for_target_address(target_address):
     """
     anyone can get this information
     :param target_address:
@@ -138,13 +145,21 @@ def get_requests_for_target_address(target_address):
     """
 
     context = GetContext()
-
     comma_separated_list_of_image_hashes = Get(context, target_address)
 
-    Notify(target_address + "has the following verified images:" + comma_separated_list_of_image_hashes)
+    Notify(comma_separated_list_of_image_hashes)
     return comma_separated_list_of_image_hashes
 
 
-def _build_verification_request_key(source_address, target_address):
-    return source_address + '_' + target_address
+def get_verification_request_status(source_address, target_address):
+    context = GetContext()
+    key = _build_verification_request_key(source_address, target_address)
+    result = Get(context, key)
+    Notify(result)
+    return result
 
+
+def _build_verification_request_key(source_address, target_address):
+    text = concat(source_address, '_')
+    key = concat(text, target_address)
+    return key

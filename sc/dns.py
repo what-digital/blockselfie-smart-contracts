@@ -5,7 +5,7 @@ neo> build sc/dns.py test 0710 05 True False False register ["test.com","AK2nJJp
 neo> build sc/dns.py test 0710 05 True False delete ["test.com"]
 neo> build sc/dns.py test 0710 05 True False transfer ["test.com","AK2nJJpJr6o664CWJKi1QRXjqeic"]
 Importing:
-neo> import contract dns.avm 0710 05 True False
+neo> import contract dns.avm 0710 05 True False False
 neo> contract search ...
 Using:
 neo> testinvoke a4e6af094a380a2d0b78e8454e00e8fb8d17f0ed query ["test.com"]
@@ -15,7 +15,7 @@ neo> testinvoke a4e6af094a380a2d0b78e8454e00e8fb8d17f0ed transfer ["test.com","A
 """
 from boa.interop.Neo.Runtime import Log, Notify
 from boa.interop.Neo.Storage import Get, Put, GetContext, Delete
-from boa.interop.Neo.Runtime import GetTrigger,CheckWitness
+from boa.interop.Neo.Runtime import GetTrigger, CheckWitness
 from boa.builtins import concat
 
 
